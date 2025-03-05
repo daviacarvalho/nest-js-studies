@@ -16,4 +16,14 @@ export class TasksService {
   create(body: string) {
     return body;
   }
+
+  update(body: string, id: string) {
+    console.log('Updating task where ID: ' + id);
+    return body;
+  }
+
+  delete(id: string) {
+    console.log('Deleting task where ID: ' + id);
+    return id;
+  }
 }

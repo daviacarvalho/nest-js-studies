@@ -8,4 +8,8 @@ export class UsersService {
       { id: 2, name: 'rodrigo' },
     ];
   }
+
+  create(body: string) {
+    return body;
+  }
 }
