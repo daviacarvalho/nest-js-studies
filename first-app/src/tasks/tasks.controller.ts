@@ -9,6 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
+import { Task } from './entities/task.entity';
 
 @Controller('/tasks')
 export class TasksController {
@@ -16,8 +17,7 @@ export class TasksController {
 
   @Get()
   getTasks(@Query('limit') limit: string) {
-    console.log(limit);
-    return this.taskService.listAll();
+    return this.taskService.listAll(limit);
   }
 
   @Get(':id')
@@ -27,19 +27,16 @@ export class TasksController {
 
   @Post('/create')
   createTask(@Body() body: { name: string; description?: string }) {
-    console.log(body);
     return this.taskService.create(body);
   }
 
   @Patch(':id')
-  updateTask(@Body() body: string, @Param('id') id: string) {
-    console.log(body);
+  updateTask(@Body() body: Partial<Task>, @Param('id') id: string) {
     return this.taskService.update(body, id);
   }
 
   @Delete(':id')
   deleteTask(@Param('id') id: string) {
-    console.log(id);
     return this.taskService.delete(id);
   }
 }

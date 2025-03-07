@@ -11,7 +11,8 @@ export class TasksService {
     },
   ];
 
-  listAll() {
+  listAll(limit?: string) {
+    console.log(limit);
     return this.tasks;
   }
 
@@ -31,13 +32,20 @@ export class TasksService {
     return newTask;
   }
 
-  update(body: string, id: string) {
-    console.log('Updating task where ID: ' + id);
-    return body;
+  update(body: Partial<Task>, id: string): string {
+    const taskIndex = this.tasks.findIndex((task) => task.id == Number(id));
+    if (taskIndex >= 0) {
+      const taskItem: Task = this.tasks[taskIndex];
+
+      this.tasks[taskIndex] = {
+        ...taskItem,
+        ...body,
+      };
+    }
+    return 'Task updated';
   }
 
   delete(id: string) {
-    console.log('Deleting task where ID: ' + id);
     return id;
   }
 }

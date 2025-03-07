@@ -12,7 +12,6 @@ export class UsersController {
 
   @Post('/crete')
   createUser(@Body() body: string) {
-    console.log(body);
     return this.userService.create(body);
   }
 }
