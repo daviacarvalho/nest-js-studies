@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Task } from './entities/task.entity';
 
 @Injectable()
@@ -17,7 +17,13 @@ export class TasksService {
   }
 
   findOne(id: string) {
-    return this.tasks.find((task) => task.id == Number(id));
+    const task = this.tasks.find((task) => task.id == Number(id));
+
+    if (task) {
+      return task;
+    }
+
+    throw new NotFoundException('Task not found');
   }
 
   create(body: { name: string; description?: string }) {
@@ -34,6 +40,11 @@ export class TasksService {
 
   update(body: Partial<Task>, id: string): string {
     const taskIndex = this.tasks.findIndex((task) => task.id == Number(id));
+
+    if (taskIndex < 0) {
+      throw new NotFoundException('Task not found ');
+    }
+
     if (taskIndex >= 0) {
       const taskItem: Task = this.tasks[taskIndex];
 
