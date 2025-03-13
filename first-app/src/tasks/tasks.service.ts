@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Task } from './entities/task.entity';
+import { CreateTaskDto } from './dto/create-task-dto';
+import { UpdateTaskDto } from './dto/update-task-dto';
 
 @Injectable()
 export class TasksService {
@@ -26,7 +28,7 @@ export class TasksService {
     throw new NotFoundException('Task not found');
   }
 
-  create(body: { name: string; description?: string }) {
+  create(body: CreateTaskDto) {
     const newId = this.tasks.length + 1;
 
     const newTask = {
@@ -38,7 +40,7 @@ export class TasksService {
     return newTask;
   }
 
-  update(body: Partial<Task>, id: string): string {
+  update(body: UpdateTaskDto, id: string): string {
     const taskIndex = this.tasks.findIndex((task) => task.id == Number(id));
 
     if (taskIndex < 0) {
