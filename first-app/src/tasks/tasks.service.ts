@@ -1,10 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { Task } from './entities/task.entity';
 import { CreateTaskDto } from './dto/create-task-dto';
 import { UpdateTaskDto } from './dto/update-task-dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class TasksService {
+  constructor(private prisma: PrismaService) {}
+
   private tasks: Task[] = [
     {
       id: 1,
@@ -13,30 +16,32 @@ export class TasksService {
     },
   ];
 
-  listAll(limit?: string) {
-    console.log(limit);
-    return this.tasks;
+  async listAll() {
+    const tasks = await this.prisma.task.findMany();
+    return tasks;
   }
 
-  findOne(id: string) {
-    const task = this.tasks.find((task) => task.id == Number(id));
+  async findOne(id: number) {
+    const task = await this.prisma.task.findFirst({
+      where: {
+        id: id,
+      },
+    });
 
-    if (task) {
-      return task;
+    if (!task?.name) {
+      throw new HttpException('task not found', HttpStatus.NOT_FOUND);
     }
-
-    throw new NotFoundException('Task not found');
   }
 
-  create(body: CreateTaskDto) {
-    const newId = this.tasks.length + 1;
+  async create(createTaskDto: CreateTaskDto) {
+    const newTask = await this.prisma.task.create({
+      data: {
+        name: createTaskDto.name,
+        description: createTaskDto.description,
+        completed: createTaskDto.completed ?? false,
+      },
+    });
 
-    const newTask = {
-      id: newId,
-      ...body,
-    };
-
-    this.tasks.push(newTask);
     return newTask;
   }
 
