@@ -18,7 +18,10 @@ The project is organized into modules that represent different themes or functio
    ```
 
 Install the dependencies:
+
+```bash
 npm install
+```
 
 Run the server in development mode:
 npm run start:dev
