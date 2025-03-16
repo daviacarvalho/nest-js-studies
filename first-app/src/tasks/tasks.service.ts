@@ -1,5 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { Task } from './entities/task.entity';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task-dto';
 import { UpdateTaskDto } from './dto/update-task-dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -7,15 +6,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class TasksService {
   constructor(private prisma: PrismaService) {}
-
-  private tasks: Task[] = [
-    {
-      id: 1,
-      name: 'Go to walmart',
-      description: 'Needing lunch',
-    },
-  ];
-
   async listAll() {
     const tasks = await this.prisma.task.findMany();
     return tasks;
@@ -45,22 +35,24 @@ export class TasksService {
     return newTask;
   }
 
-  update(body: UpdateTaskDto, id: string): string {
-    const taskIndex = this.tasks.findIndex((task) => task.id == Number(id));
+  async update(body: UpdateTaskDto, id: number) {
+    console.log('aqui');
+    const findTask = await this.prisma.task.findFirst({
+      where: { id: Number(id) },
+    });
 
-    if (taskIndex < 0) {
-      throw new NotFoundException('Task not found ');
+    if (!findTask) {
+      throw new HttpException('Task not found', HttpStatus.NOT_FOUND);
     }
 
-    if (taskIndex >= 0) {
-      const taskItem: Task = this.tasks[taskIndex];
+    const updatedTask = await this.prisma.task.update({
+      where: {
+        id: findTask.id,
+      },
+      data: body,
+    });
 
-      this.tasks[taskIndex] = {
-        ...taskItem,
-        ...body,
-      };
-    }
-    return 'Task updated';
+    return updatedTask;
   }
 
   delete(id: string) {

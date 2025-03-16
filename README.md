@@ -12,10 +12,11 @@ The project is organized into modules that represent different themes or functio
 
 ## How to Run the Project
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/daviacarvalho/nest-js-studies
-   ```
+Clone the repository:
+
+```bash
+git clone https://github.com/daviacarvalho/nest-js-studies
+```
 
 Install the dependencies:
 
@@ -24,4 +25,7 @@ npm install
 ```
 
 Run the server in development mode:
+
+```bash
 npm run start:dev
+```
