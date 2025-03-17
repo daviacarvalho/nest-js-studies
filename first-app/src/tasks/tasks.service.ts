@@ -36,7 +36,6 @@ export class TasksService {
   }
 
   async update(body: UpdateTaskDto, id: number) {
-    console.log('aqui');
     const findTask = await this.prisma.task.findFirst({
       where: { id: Number(id) },
     });
@@ -55,7 +54,19 @@ export class TasksService {
     return updatedTask;
   }
 
-  delete(id: string) {
-    return id;
+  async delete(id: number) {
+    const findTask = await this.prisma.task.findFirst({
+      where: { id: Number(id) },
+    });
+
+    if (!findTask) {
+      throw new HttpException('Task not found', HttpStatus.NOT_FOUND);
+    }
+
+    const deletedTask = await this.prisma.task.delete({
+      where: { id: findTask.id },
+    });
+
+    return deletedTask;
   }
 }
